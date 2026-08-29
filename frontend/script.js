@@ -1,37 +1,57 @@
-const chat=document.getElementById('chat');
+const API_KEY = "AQ.Ab8RN6KzD0tR8xLs7KE6so4Fet-TxX75zatQkqJHmvwgKXoMlA";
 
-const input=document.getElementById('msg');
+const chat = document.getElementById('chat');
+const input = document.getElementById('messageInput') || document.querySelector('input');
 
-document.getElementById('send').onclick=()=>{
+async function sendMessage() {
+    const text = input.value.trim();
+    if (!text) return;
 
-const t=input.value.trim();
+    addMessage('YOU: ' + text, 'user');
+    input.value = '';
 
-if(!t)return;
+    addMessage('J.A.R.V.I.S: Processing...', 'ai');
 
-add('YOU: '+t, 'user');
+    try {
+        const res = await fetch(
+            "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent",
+            {
+                method: "POST",
+                headers: { 
+                    "Content-Type": "application/json",
+                    "x-goog-api-key": API_KEY
+                },
+                body: JSON.stringify({
+                    contents: [{ parts: [{ text: text }] }]
+                })
+            }
+        );
 
-input.value='';
-
-add('J.A.R.V.I.S: Processing...', 'ai');
-
-setTimeout(() => {
-
-chat.lastChild.innerText='J.A.R.V.I.S: Systems online. How may I assist you, Boss?';
-
-}, 1000);
-
-};
-
-function add(text, who) {
-
+        const data = await res.json();
+        
+        if (data.candidates && data.candidates[0].content.parts[0].text) {
+            const reply = data.candidates[0].content.parts[0].text;
+            updateLastAiMessage('J.A.R.V.I.S: ' + reply);
+        } else {
+            updateLastAiMessage('J.A.R.V.I.S: API error - ' + (data.error?.message || 'Unknown issue'));
+        }
+    } catch (e) {
+        updateLastAiMessage('J.A.R.V.I.S: Network error - ' + e.message);
+    }
 }
 
-const d=document.createElement('div');
+function addMessage(msg, sender) {
+    const p = document.createElement('p');
+    p.innerText = msg;
+    p.className = sender;
+    chat.appendChild(p);
+}
 
-d.className='msg +who;
+function updateLastAiMessage(msg) {
+    const aiMessages = chat.getElementsByClassName('ai');
+    if (aiMessages.length > 0) {
+        aiMessages[aiMessages.length - 1].innerText = msg;
+    }
+}
 
-d.innerText=text;
-
-chat.appendChild(d);
-
-chat.scrollTop=chat.scrollHeight;
+document.getElementById('send').onclick = sendMessage;
