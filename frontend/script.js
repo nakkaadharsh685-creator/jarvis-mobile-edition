@@ -1,4 +1,4 @@
-const API_KEY = "AQ.Ab8RN6Jav-DAHM62wEwZN0UbXmLpUA4iQZANmaeAVQZamQh1EQ";
+const API_KEY = "AQ.Ab8RN6LMateAKfQMrLlIPMXE6830FziJWofBUFpu9Z54iS9_pw";
 
 const chat = document.getElementById('chat');
 const input = document.getElementById('messageInput') || document.querySelector('input');
@@ -14,11 +14,13 @@ async function sendMessage() {
 
     try {
         const res = await fetch(
-         'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=' + API_KEY,
-            
+            "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent",
             {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: { 
+                    "Content-Type": "application/json",
+                    "x-goog-api-key": API_KEY
+                },
                 body: JSON.stringify({
                     contents: [{ parts: [{ text: text }] }]
                 })
