@@ -2,7 +2,7 @@
 const API_KEY = PART1"AQ.Ab8RN6KzD0tR8xLs7KE6so4Fet;
 const API_KEY = PART2"-TxX75zatQkqJHmvwgKXoMlA";
 
-const API_KEY = PART2+PART2
+const API_KEY = PART2+PART2;
 
 const chat = document.getElementById('chat');
 const input = document.getElementById('messageInput') || document.querySelector('input');
