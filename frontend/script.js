@@ -1,57 +1,37 @@
-const API_KEY = "AQ.Ab8RN6LMateAKfQMrLlIPMXE6830FziJWofBUFpu9Z54iS9_pw";
+const chat=document.getElementById('chat');
 
-const chat = document.getElementById('chat');
-const input = document.getElementById('messageInput') || document.querySelector('input');
+const input=document.getElementById('msg');
 
-async function sendMessage() {
-    const text = input.value.trim();
-    if (!text) return;
+document.getElementById('send').onclick=()=>{
 
-    addMessage('YOU: ' + text, 'user');
-    input.value = '';
+const t=input.value.trim();
 
-    addMessage('J.A.R.V.I.S: Processing...', 'ai');
+if(!t)return;
 
-    try {
-        const res = await fetch(
-            "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent",
-            {
-                method: "POST",
-                headers: { 
-                    "Content-Type": "application/json",
-                    "x-goog-api-key": API_KEY
-                },
-                body: JSON.stringify({
-                    contents: [{ parts: [{ text: text }] }]
-                })
-            }
-        );
+add('YOU: '+t, 'user');
 
-        const data = await res.json();
-        
-        if (data.candidates && data.candidates[0].content.parts[0].text) {
-            const reply = data.candidates[0].content.parts[0].text;
-            updateLastAiMessage('J.A.R.V.I.S: ' + reply);
-        } else {
-            updateLastAiMessage('J.A.R.V.I.S: API error - ' + (data.error?.message || 'Unknown issue'));
-        }
-    } catch (e) {
-        updateLastAiMessage('J.A.R.V.I.S: Network error - ' + e.message);
-    }
+input.value='';
+
+add('J.A.R.V.I.S: Processing...', 'ai');
+
+setTimeout(() => {
+
+chat.lastChild.innerText='J.A.R.V.I.S: Systems online. How may I assist you, Boss?';
+
+}, 1000);
+
+};
+
+function add(text, who) {
+
 }
 
-function addMessage(msg, sender) {
-    const p = document.createElement('p');
-    p.innerText = msg;
-    p.className = sender;
-    chat.appendChild(p);
-}
+const d=document.createElement('div');
 
-function updateLastAiMessage(msg) {
-    const aiMessages = chat.getElementsByClassName('ai');
-    if (aiMessages.length > 0) {
-        aiMessages[aiMessages.length - 1].innerText = msg;
-    }
-}
+d.className='msg +who;
 
-document.getElementById('send').onclick = sendMessage;
+d.innerText=text;
+
+chat.appendChild(d);
+
+chat.scrollTop=chat.scrollHeight;
