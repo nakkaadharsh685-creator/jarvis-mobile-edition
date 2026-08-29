@@ -1,6 +1,9 @@
+const API_KEY = "AQ.Ab8RN6KEURLoDa0Q9CMCviA9F2nikHCKrNDS6554ZqyrK173Eg";
+
 function getApiKey() {
-    return ["AQ.Ab8RN6KzD0tR8xLs7KE6so4Fet", "-TxX7SzatQkqJHnvwgKXoMIA"].join("");
+    return API_KEY;
 }
+
 
 const chat = document.getElementById('chat');
 const input = document.getElementById('messageInput') || document.querySelector('input');
