@@ -57,3 +57,4 @@ function updateLastAiMessage(msg) {
 }
 
 document.getElementById('send').onclick = sendMessage;
+            
