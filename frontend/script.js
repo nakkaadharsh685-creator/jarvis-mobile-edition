@@ -1,9 +1,5 @@
-const API_KEY = "AQ.Ab8RN6KEURLoDa0Q9CMCviA9F2nikHCKrNDS6554ZqyrK173Eg";
 
-function getApiKey() {
-    return API_KEY;
-}
-
+const API_KEY = "AQ.Ab8RN6I-fC-fNHO1xVE3W-2HYzCwR2HYxI21LXwC9UFEsWpWjQ";
 
 const chat = document.getElementById('chat');
 const input = document.getElementById('messageInput') || document.querySelector('input');
@@ -18,19 +14,18 @@ async function sendMessage() {
     addMessage('J.A.R.V.I.S: Processing...', 'ai');
 
     try {
-        const res = await fetch(
-            "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent",
-            {
-                method: "POST",
-                headers: { 
-                    "Content-Type": "application/json",
-                    "x-goog-api-key": getApiKey()
-                },
-                body: JSON.stringify({
-                    contents: [{ parts: [{ text: text }] }]
-                })
-            }
-        );
+        // API Key ని డైరెక్ట్‌గా URL Query Parameter గా పంపుతున్నాం
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
+
+        const res = await fetch(url, {
+            method: "POST",
+            headers: { 
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                contents: [{ parts: [{ text: text }] }]
+            })
+        });
 
         const data = await res.json();
         
@@ -60,4 +55,3 @@ function updateLastAiMessage(msg) {
 }
 
 document.getElementById('send').onclick = sendMessage;
-            
