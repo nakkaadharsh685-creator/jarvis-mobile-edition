@@ -1,42 +1,54 @@
 const API_KEY = "AQ.Ab8RN6Jav-DAHM62wEwZN0UbXmLpUA4iQZANmaeAVQZamQh1EQ";
 
 const chat = document.getElementById('chat');
-const input = document.getElementById('msg');
+const input = document.getElementById('messageInput') || document.querySelector('input');
 
-document.getElementById('send').onclick = async () => {
-    const t = input.value.trim();
-    if (!t) return;
-    
-    add('YOU: ' + t, 'user');
+async function sendMessage() {
+    const text = input.value.trim();
+    if (!text) return;
+
+    addMessage('YOU: ' + text, 'user');
     input.value = '';
-    add('J.A.R.V.I.S: Processing...', 'ai');
+
+    addMessage('J.A.R.V.I.S: Processing...', 'ai');
 
     try {
         const res = await fetch(
-            "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + API_KEY,
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`,
             {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ contents: [{ parts: [{ text: t }] }] })
+                body: JSON.stringify({
+                    contents: [{ parts: [{ text: text }] }]
+                })
             }
         );
+
         const data = await res.json();
         
-        if (data.candidates && data.candidates[0]) {
+        if (data.candidates && data.candidates[0].content.parts[0].text) {
             const reply = data.candidates[0].content.parts[0].text;
-            chat.lastChild.innerText = 'J.A.R.V.I.S: ' + reply;
+            updateLastAiMessage('J.A.R.V.I.S: ' + reply);
         } else {
-            chat.lastChild.innerText = 'J.A.R.V.I.S: API error occurred.';
+            updateLastAiMessage('J.A.R.V.I.S: API error - ' + (data.error?.message || 'Unknown issue'));
         }
     } catch (e) {
-        chat.lastChild.innerText = 'J.A.R.V.I.S: Connection error.';
+        updateLastAiMessage('J.A.R.V.I.S: Network error - ' + e.message);
     }
-};
-
-function add(text, who) {
-    const d = document.createElement('div');
-    d.className = 'msg ' + who;
-    d.innerText = text;
-    chat.appendChild(d);
-    chat.scrollTop = chat.scrollHeight;
 }
+
+function addMessage(msg, sender) {
+    const p = document.createElement('p');
+    p.innerText = msg;
+    p.className = sender;
+    chat.appendChild(p);
+}
+
+function updateLastAiMessage(msg) {
+    const aiMessages = chat.getElementsByClassName('ai');
+    if (aiMessages.length > 0) {
+        aiMessages[aiMessages.length - 1].innerText = msg;
+    }
+}
+
+document.getElementById('send').onclick = sendMessage;
