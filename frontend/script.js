@@ -1,4 +1,4 @@
-const API_KEY = "AQ.Ab8RN6I8Kglumlq8a15HlgFYHr4Coihi1fSIJkOP_5cVzrVlXA";
+const API_KEY = "AQ.Ab8RN6Jav-DAHM62wEwZN0UbXmLpUA4iQZANmaeAVQZamQh1EQ";
 
 const chat = document.getElementById('chat');
 const input = document.getElementById('msg');
